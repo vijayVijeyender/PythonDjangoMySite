@@ -9,35 +9,35 @@ from brand.serializers import *
 class BrandView(APIView):
 
     def get(self, request):
-        dept = Brand.objects.all()
-        serializer = BrandSerializer(dept, many=True)
-        return Response(serializer.data)
+        brandList = Brand.objects.all()
+        brandDetails = BrandSerializer(brandList, many=True)
+        return Response(brandDetails.data)
 
     def post(self, request):        
-        serializer = BrandSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        newBrandDetails = BrandSerializer(data=request.data)
+        if newBrandDetails.is_valid():
+            newBrandDetails.save()
+            return Response(newBrandDetails.data, status=status.HTTP_201_CREATED)
         else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response(newBrandDetails.errors, status=status.HTTP_400_BAD_REQUEST)
         
     def put(self, request, id):
         try:
-            dept = Brand.objects.get(id=id)
+            brand = Brand.objects.get(id=id)
         except Brand.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
-        serializer = BrandSerializer(dept, data=request.data, partial=True)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data,{'message : updated successfully'}, status=status.HTTP_201_CREATED)
+        updatedBrandDetails = BrandSerializer(brand, data=request.data, partial=True)
+        if updatedBrandDetails.is_valid():
+            updatedBrandDetails.save()
+            return Response(updatedBrandDetails.data,{'message : updated successfully'}, status=status.HTTP_201_CREATED)
         else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response(updatedBrandDetails.errors, status=status.HTTP_400_BAD_REQUEST)
         
     def delete(self, request, id):
         try:
-            dept = Brand.objects.get(id=id)
+            brand = Brand.objects.get(id=id)
         except Brand.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
         
-        dept.delete()
+        brand.delete()
         return Response({"message":"deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
